@@ -1,18 +1,18 @@
-#import <UIKit/UIKit.h>
+%hook UIApplication
 
-__attribute__((constructor))
-static void MahmutInit() {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertController *alert =
-            [UIAlertController alertControllerWithTitle:@"😈 Mahmut'un Tweak'i"
-                                                message:@"Merhaba Mahmut!"
-                                         preferredStyle:UIAlertControllerStyleAlert];
+- (void)applicationDidBecomeActive:(UIApplication *)application {
 
-        UIViewController *root =
-            UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.windows.firstObject.rootViewController;
+    %orig;
 
-        if (root) {
-            [root presentViewController:alert animated:YES completion:nil];
-        }
-    });
+    UIWindowScene *scene = (UIWindowScene *)UIApplication.sharedApplication.connectedScenes.allObjects.firstObject;
+    UIWindow *window = scene.windows.firstObject;
+
+    UIAlertController *alert =
+        [UIAlertController alertControllerWithTitle:@"🔥 Mahmutun Tweaki"
+                                            message:@"Leps World'e başarıyla enjekte edildi!"
+                                     preferredStyle:UIAlertControllerStyleAlert];
+
+    [window.rootViewController presentViewController:alert animated:YES completion:nil];
 }
+
+%end

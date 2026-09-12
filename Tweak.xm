@@ -1,18 +1,32 @@
+#import <UIKit/UIKit.h>
+
 %hook UIApplication
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-
     %orig;
 
-    UIWindowScene *scene = (UIWindowScene *)UIApplication.sharedApplication.connectedScenes.allObjects.firstObject;
-    UIWindow *window = scene.windows.firstObject;
+    static BOOL shown = NO;
+    if (shown) return;
+    shown = YES;
 
-    UIAlertController *alert =
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertController *alert =
         [UIAlertController alertControllerWithTitle:@"🔥 Mahmutun Tweaki"
                                             message:@"Leps World'e başarıyla enjekte edildi!"
                                      preferredStyle:UIAlertControllerStyleAlert];
 
-    [window.rootViewController presentViewController:alert animated:YES completion:nil];
+        UIAlertAction *ok =
+        [UIAlertAction actionWithTitle:@"Tamam"
+                                 style:UIAlertActionStyleDefault
+                               handler:nil];
+
+        [alert addAction:ok];
+
+        UIViewController *root =
+            UIApplication.sharedApplication.keyWindow.rootViewController;
+
+        [root presentViewController:alert animated:YES completion:nil];
+    });
 }
 
 %end

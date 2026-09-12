@@ -2,7 +2,7 @@ Package: com.mahmut.tweak
 Name: MahmutTweak
 Version: 1.0.0
 Architecture: iphoneos-arm64
-Description: Mahmut'un ilk tweak'i
+Description: Test tweak
 Maintainer: Mahmut
 Author: Mahmut
 Section: Tweaks

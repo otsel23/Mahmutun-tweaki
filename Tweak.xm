@@ -1,30 +1,31 @@
 #import <UIKit/UIKit.h>
 
-%ctor {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+%hook UIApplication
 
-        UIWindow *window = nil;
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    %orig;
 
-        for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
-            if ([scene isKindOfClass:[UIWindowScene class]]) {
-                UIWindowScene *windowScene = (UIWindowScene *)scene;
-                window = windowScene.windows.firstObject;
-                break;
-            }
-        }
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC),
+                       dispatch_get_main_queue(), ^{
 
-        if (!window) return;
+            UIViewController *root =
+                UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.windows.firstObject.rootViewController;
 
-        UIAlertController *alert =
-        [UIAlertController alertControllerWithTitle:@"🔥 Mahmutun Tweaki"
-                                            message:@"Leps World'e başarıyla yüklendi!"
-                                     preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert =
+                [UIAlertController alertControllerWithTitle:@"🔥 Mahmutun Tweaki"
+                                                    message:@"Leps World'e başarıyla enjekte edildi!"
+                                             preferredStyle:UIAlertControllerStyleAlert];
 
-        [window.rootViewController presentViewController:alert animated:YES completion:nil];
+            [root presentViewController:alert animated:YES completion:nil];
 
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [alert dismissViewControllerAnimated:YES completion:nil];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC),
+                           dispatch_get_main_queue(), ^{
+                [alert dismissViewControllerAnimated:YES completion:nil];
+            });
         });
-
     });
 }
+
+%end

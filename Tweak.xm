@@ -1,32 +1,30 @@
 #import <UIKit/UIKit.h>
 
-%hook UIApplication
+%ctor {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    %orig;
+        UIWindow *window = nil;
 
-    static BOOL shown = NO;
-    if (shown) return;
-    shown = YES;
+        for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+            if ([scene isKindOfClass:[UIWindowScene class]]) {
+                UIWindowScene *windowScene = (UIWindowScene *)scene;
+                window = windowScene.windows.firstObject;
+                break;
+            }
+        }
 
-    dispatch_async(dispatch_get_main_queue(), ^{
+        if (!window) return;
+
         UIAlertController *alert =
         [UIAlertController alertControllerWithTitle:@"🔥 Mahmutun Tweaki"
-                                            message:@"Leps World'e başarıyla enjekte edildi!"
+                                            message:@"Leps World'e başarıyla yüklendi!"
                                      preferredStyle:UIAlertControllerStyleAlert];
 
-        UIAlertAction *ok =
-        [UIAlertAction actionWithTitle:@"Tamam"
-                                 style:UIAlertActionStyleDefault
-                               handler:nil];
+        [window.rootViewController presentViewController:alert animated:YES completion:nil];
 
-        [alert addAction:ok];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [alert dismissViewControllerAnimated:YES completion:nil];
+        });
 
-        UIViewController *root =
-            UIApplication.sharedApplication.keyWindow.rootViewController;
-
-        [root presentViewController:alert animated:YES completion:nil];
     });
 }
-
-%end

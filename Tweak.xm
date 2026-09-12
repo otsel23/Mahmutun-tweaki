@@ -1,29 +1,18 @@
 #import <UIKit/UIKit.h>
 
 __attribute__((constructor))
-static void MahmutTweakInit() {
-
+static void MahmutInit() {
     dispatch_async(dispatch_get_main_queue(), ^{
-
-        UIWindow *window = UIApplication.sharedApplication.windows.firstObject;
-        UIViewController *root = window.rootViewController;
-
-        if (!root) return;
-
         UIAlertController *alert =
-        [UIAlertController alertControllerWithTitle:@"😈 Mahmut'un Tweak'i"
-                                            message:@"Lep's World açıldı!"
-                                     preferredStyle:UIAlertControllerStyleAlert];
+            [UIAlertController alertControllerWithTitle:@"😈 Mahmut'un Tweak'i"
+                                                message:@"Merhaba Mahmut!"
+                                         preferredStyle:UIAlertControllerStyleAlert];
 
-        UIAlertAction *ok =
-        [UIAlertAction actionWithTitle:@"Devam"
-                                 style:UIAlertActionStyleDefault
-                               handler:nil];
+        UIViewController *root =
+            UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.windows.firstObject.rootViewController;
 
-        [alert addAction:ok];
-
-        [root presentViewController:alert animated:YES completion:nil];
-
+        if (root) {
+            [root presentViewController:alert animated:YES completion:nil];
+        }
     });
-
 }
